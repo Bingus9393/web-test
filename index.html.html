@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>شخصيتك واللون</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&family=Amiri:ital,wght@0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e0e;
+      --card: #161616;
+      --border: #2a2a2a;
+      --text: #f0ece4;
+      --muted: #6b6b6b;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Tajawal', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow-x: hidden;
+      direction: rtl;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+    }
+
+    header {
+      margin-bottom: 3rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+      font-weight: 300;
+    }
+
+    h1 {
+      font-family: 'Amiri', serif;
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--text);
+    }
+
+    h1 em {
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 2rem;
+      animation: fadeUp 0.6s ease 0.15s both;
+    }
+
+    .field {
+      margin-bottom: 1.75rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+      font-weight: 300;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Amiri', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      padding: 0.4rem 0;
+      outline: none;
+      transition: border-color 0.3s;
+      direction: rtl;
+      text-align: right;
+    }
+
+    input[type="text"]::placeholder { color: var(--muted); }
+    input[type="text"]:focus { border-color: var(--text); }
+
+    .colors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+    }
+
+    .color-btn {
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 0.75rem 0.5rem;
+      background: transparent;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.8rem;
+      color: var(--muted);
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .color-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      transition: transform 0.25s ease;
+    }
+
+    .color-btn:hover { border-color: var(--text); color: var(--text); }
+    .color-btn:hover .color-dot { transform: scale(1.2); }
+    .color-btn.selected { border-color: var(--text); color: var(--text); background: #1e1e1e; }
+    .color-btn.selected .color-dot { transform: scale(1.15); }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 1.75rem;
+      padding: 1rem;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: 2px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .submit-btn:hover { opacity: 0.85; }
+    .submit-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .result {
+      display: none;
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .result.visible { display: block; }
+
+    .result-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      font-weight: 300;
+    }
+
+    .result-name {
+      font-family: 'Amiri', serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      margin-bottom: 0.75rem;
+      line-height: 1.5;
+    }
+
+    .result-name span {
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .result-color-bar {
+      height: 3px;
+      border-radius: 2px;
+      margin-bottom: 1rem;
+      transition: background 0.5s ease;
+    }
+
+    .result-text {
+      font-size: 0.9rem;
+      line-height: 2;
+      color: #c8c4bc;
+      font-weight: 300;
+    }
+
+    .result-trait {
+      display: inline-block;
+      font-size: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.2rem 0.8rem;
+      margin: 0.6rem 0 0 0.4rem;
+      color: var(--muted);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reset-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-top: 1.25rem;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+      display: block;
+    }
+    .reset-btn:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <p class="eyebrow">تجربة شخصية صغيرة</p>
+    <h1>ماذا يقول <em>لونك</em> عنك؟</h1>
+  </header>
+
+  <div class="card">
+    <div class="field">
+      <label for="username">اسمك</label>
+      <input type="text" id="username" placeholder="مثال: أحمد" autocomplete="off"/>
+    </div>
+
+    <div class="field">
+      <label>لونك المفضّل</label>
+      <div class="colors-grid" id="colorsGrid"></div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" disabled>اكتشف شخصيتك ←</button>
+
+    <div class="result" id="result">
+      <p class="result-label">قراءتك الشخصية</p>
+      <p class="result-name" id="resultName"></p>
+      <div class="result-color-bar" id="resultBar"></div>
+      <p class="result-text" id="resultText"></p>
+      <div id="resultTraits"></div>
+      <button class="reset-btn" id="resetBtn">↩ جرّب لوناً آخر</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const colors = [
+    {
+      id: 'red', label: 'أحمر', hex: '#e05252',
+      message: "أنت قوة لا يمكن تجاهلها. شغوف، طموح، وتملأ أي مكان تدخله بحضورك. تشعر بكل شيء بعمق، وهذا ما يميّزك عن الجميع.",
+      traits: ['شغوف', 'جريء', 'قائد']
+    },
+    {
+      id: 'blue', label: 'أزرق', hex: '#5286e0',
+      message: "هادئ في الظاهر، لكن بداخلك محيط لا حدود له. أنت الشخص الذي يلجأ إليه الآخرون في أصعب اللحظات — موثوق، متأمّل، وحكيم بطريقة هادئة.",
+      traits: ['وفيّ', 'هادئ', 'مفكّر']
+    },
+    {
+      id: 'green', label: 'أخضر', hex: '#52c47a',
+      message: "لديك ثبات داخلي نادر. النمو يهمّك — في نفسك وفي من تحبّ وفي العالم من حولك. أنت النوع الذي يرعى كل ما يقترب منه.",
+      traits: ['ثابت', 'راعٍ', 'نامٍ']
+    },
+    {
+      id: 'yellow', label: 'أصفر', hex: '#f0c040',
+      message: "تفاؤل معدٍ لا يقاوم. ترى الإمكانيات حيث يرى الآخرون نهايات مسدودة، وطاقتك تُضيء كل من حولك. هذا النوع من الإشراق نادر حقاً.",
+      traits: ['متفائل', 'مبدع', 'دافئ']
+    },
+    {
+      id: 'purple', label: 'بنفسجي', hex: '#9b6ee0',
+      message: "في داخلك شيء آخر غير عادي. تحلم بألوان زاهية وتفكّر بطبقات لا يصلها كثيرون. خيالك واسع وعمقك يفاجئ كل من يقترب منك.",
+      traits: ['حدسي', 'حالم', 'عميق']
+    },
+    {
+      id: 'orange', label: 'برتقالي', hex: '#e08040',
+      message: "حماس حقيقي لا يتكلّف. تقفز أولاً وتفكّر لاحقاً — وبطريقة ما تنجح دائماً. تحوّل العادي إلى مغامرة بمجرد وجودك.",
+      traits: ['مغامر', 'عفوي', 'مرِح']
+    },
+    {
+      id: 'pink', label: 'وردي', hex: '#e06090',
+      message: "تعاطفك عميق وحقيقي. تلاحظ التفاصيل الصغيرة — نبرة صديق تغيّرت، صمت غريب لا يلاحظه أحد. تقود بقلبك وتجعل الناس يشعرون بأنهم مرئيون.",
+      traits: ['متعاطف', 'مُعطٍ', 'معبِّر']
+    },
+    {
+      id: 'black', label: 'أسود', hex: '#888888',
+      message: "حضور هادئ لكنه لا يُنسى. لديك كثافة صامتة وعين ترى الجودة في كل شيء. تقول أقل وتعني أكثر، والناس المناسبون يفهمون هذا تماماً.",
+      traits: ['راقٍ', 'مكثَّف', 'انتقائي']
+    },
+    {
+      id: 'white', label: 'أبيض', hex: '#d4d0c8',
+      message: "الوضوح هو قوّتك الخارقة. تخترق الضجيج وتصل إلى الجوهر بسهولة، وترى الحقيقة حيث يرى الآخرون تعقيداً. ثقتك هادئة ولا تحتاج إلى إثبات.",
+      traits: ['واضح الفكر', 'صادق', 'نقي']
+    },
+  ];
+
+  let selectedColor = null;
+
+  const grid = document.getElementById('colorsGrid');
+  const submitBtn = document.getElementById('submitBtn');
+  const usernameInput = document.getElementById('username');
+  const result = document.getElementById('result');
+  const resultName = document.getElementById('resultName');
+  const resultBar = document.getElementById('resultBar');
+  const resultText = document.getElementById('resultText');
+  const resultTraits = document.getElementById('resultTraits');
+  const resetBtn = document.getElementById('resetBtn');
+
+  colors.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'color-btn';
+    btn.dataset.id = c.id;
+    btn.innerHTML = `<span class="color-dot" style="background:${c.hex}"></span>${c.label}`;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedColor = c;
+      checkReady();
+    });
+    grid.appendChild(btn);
+  });
+
+  usernameInput.addEventListener('input', checkReady);
+
+  function checkReady() {
+    submitBtn.disabled = !(usernameInput.value.trim() && selectedColor);
+  }
+
+  submitBtn.addEventListener('click', () => {
+    const name = usernameInput.value.trim();
+    if (!name || !selectedColor) return;
+
+    resultName.innerHTML = `<span>${name}</span>، أنت...`;
+    resultBar.style.background = selectedColor.hex;
+    resultText.textContent = selectedColor.message;
+    resultTraits.innerHTML = selectedColor.traits.map(t => `<span class="result-trait">${t}</span>`).join('');
+
+    result.classList.add('visible');
+    result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    submitBtn.style.display = 'none';
+  });
+
+  resetBtn.addEventListener('click', () => {
+    result.classList.remove('visible');
+    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+    selectedColor = null;
+    submitBtn.style.display = '';
+    submitBtn.disabled = true;
+    checkReady();
+  });
+</script>
+</body>
+</html>
