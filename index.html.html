@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>شخصيتك واللون</title>
+  <title>اختبار الأرقام</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&family=Amiri:ital,wght@0,700;1,400&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,6 +14,10 @@
       --border: #2a2a2a;
       --text: #f0ece4;
       --muted: #6b6b6b;
+      --green: #52c47a;
+      --red: #e05252;
+      --gold: #f5c842;
+      --gold-dark: #c49a10;
     }
 
     body {
@@ -39,10 +43,7 @@
       opacity: 0.4;
     }
 
-    .container {
-      width: 100%;
-      max-width: 520px;
-    }
+    .container { width: 100%; max-width: 520px; }
 
     header {
       margin-bottom: 3rem;
@@ -51,7 +52,6 @@
 
     .eyebrow {
       font-size: 0.75rem;
-      letter-spacing: 0.05em;
       color: var(--muted);
       margin-bottom: 0.75rem;
       font-weight: 300;
@@ -62,13 +62,9 @@
       font-size: clamp(2rem, 6vw, 3rem);
       font-weight: 700;
       line-height: 1.3;
-      color: var(--text);
     }
 
-    h1 em {
-      font-style: italic;
-      font-weight: 400;
-    }
+    h1 em { font-style: italic; font-weight: 400; }
 
     .card {
       background: var(--card);
@@ -78,9 +74,7 @@
       animation: fadeUp 0.6s ease 0.15s both;
     }
 
-    .field {
-      margin-bottom: 1.75rem;
-    }
+    .field { margin-bottom: 1.75rem; }
 
     label {
       display: block;
@@ -109,115 +103,230 @@
     input[type="text"]::placeholder { color: var(--muted); }
     input[type="text"]:focus { border-color: var(--text); }
 
-    .colors-grid {
+    .numbers-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 0.6rem;
     }
 
-    .color-btn {
+    .num-btn {
       border: 1px solid var(--border);
       border-radius: 2px;
-      padding: 0.75rem 0.5rem;
+      padding: 1rem 0.5rem;
       background: transparent;
       cursor: pointer;
       font-family: 'Tajawal', sans-serif;
-      font-size: 0.8rem;
       color: var(--muted);
       transition: all 0.25s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 0.3rem;
+    }
+
+    .num-big {
+      font-family: 'Amiri', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .num-reward {
+      font-size: 0.65rem;
+      color: var(--gold);
+      opacity: 0.6;
+    }
+
+    .num-btn:hover { border-color: var(--text); color: var(--text); }
+    .num-btn:hover .num-reward { opacity: 1; }
+    .num-btn.selected { border-color: var(--gold); color: var(--text); background: #1e1a00; }
+    .num-btn.selected .num-reward { opacity: 1; }
+
+    .math-box {
+      display: none;
+      margin-top: 1.5rem;
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 1.25rem;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .math-box.visible { display: block; }
+
+    .math-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .math-problem {
+      font-family: 'Amiri', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .math-input-row {
+      display: flex;
       gap: 0.5rem;
+      align-items: center;
     }
 
-    .color-dot {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      transition: transform 0.25s ease;
+    .math-answer {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1rem;
+      padding: 0.5rem 0.75rem;
+      outline: none;
+      text-align: center;
+      transition: border-color 0.3s;
     }
 
-    .color-btn:hover { border-color: var(--text); color: var(--text); }
-    .color-btn:hover .color-dot { transform: scale(1.2); }
-    .color-btn.selected { border-color: var(--text); color: var(--text); background: #1e1e1e; }
-    .color-btn.selected .color-dot { transform: scale(1.15); }
+    .math-answer:focus { border-color: var(--text); }
+
+    .check-btn {
+      padding: 0.5rem 1rem;
+      background: var(--border);
+      color: var(--text);
+      border: none;
+      border-radius: 2px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .check-btn:hover { background: #3a3a3a; }
+    .check-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .math-feedback {
+      margin-top: 0.6rem;
+      font-size: 0.8rem;
+      min-height: 1.2rem;
+    }
+
+    .math-feedback.correct { color: var(--green); }
+    .math-feedback.wrong { color: var(--red); }
 
     .submit-btn {
       width: 100%;
       margin-top: 1.75rem;
       padding: 1rem;
-      background: var(--text);
-      color: var(--bg);
+      background: var(--gold);
+      color: #1a1200;
       border: none;
       border-radius: 2px;
       font-family: 'Tajawal', sans-serif;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
       transition: opacity 0.2s;
     }
 
-    .submit-btn:hover { opacity: 0.85; }
-    .submit-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .submit-btn:hover { opacity: 0.88; }
+    .submit-btn:disabled { opacity: 0.25; cursor: not-allowed; background: var(--muted); color: var(--bg); }
 
+    /* Result / reward panel */
     .result {
       display: none;
       margin-top: 1.5rem;
       border-top: 1px solid var(--border);
       padding-top: 1.5rem;
       animation: fadeUp 0.5s ease both;
+      text-align: center;
     }
 
     .result.visible { display: block; }
 
-    .result-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-bottom: 0.5rem;
-      font-weight: 300;
+    /* Coin animation */
+    .coin-wrap {
+      margin: 0 auto 1.5rem;
+      width: 110px;
+      height: 110px;
+      position: relative;
     }
 
-    .result-name {
+    .coin {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ffe97a, #f5c842 40%, #c49a10 80%, #7a5c00);
+      border: 3px solid var(--gold-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      box-shadow: 0 0 30px rgba(245,200,66,0.35), inset 0 -4px 10px rgba(0,0,0,0.3);
+      animation: coinPop 0.6s cubic-bezier(0.175,0.885,0.32,1.275) both, coinGlow 2s ease-in-out 0.6s infinite alternate;
+    }
+
+    .coin-symbol {
       font-family: 'Amiri', serif;
-      font-size: 1.2rem;
-      font-style: italic;
-      margin-bottom: 0.75rem;
-      line-height: 1.5;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #7a5000;
+      line-height: 1;
     }
 
-    .result-name span {
-      font-style: normal;
+    .coin-sub {
+      font-size: 0.55rem;
+      color: #7a5000;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
       font-weight: 700;
     }
 
-    .result-color-bar {
-      height: 3px;
-      border-radius: 2px;
-      margin-bottom: 1rem;
-      transition: background 0.5s ease;
+    @keyframes coinPop {
+      0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
+      70%  { transform: scale(1.12) rotate(5deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
     }
 
-    .result-text {
-      font-size: 0.9rem;
-      line-height: 2;
-      color: #c8c4bc;
-      font-weight: 300;
+    @keyframes coinGlow {
+      from { box-shadow: 0 0 20px rgba(245,200,66,0.3), inset 0 -4px 10px rgba(0,0,0,0.3); }
+      to   { box-shadow: 0 0 45px rgba(245,200,66,0.65), inset 0 -4px 10px rgba(0,0,0,0.3); }
     }
 
-    .result-trait {
-      display: inline-block;
-      font-size: 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 0.2rem 0.8rem;
-      margin: 0.6rem 0 0 0.4rem;
+    .reward-title {
+      font-size: 0.7rem;
       color: var(--muted);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.05em;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .reward-name {
+      font-family: 'Amiri', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .reward-amount {
+      font-family: 'Amiri', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin: 0.5rem 0 0.2rem;
+      animation: fadeUp 0.5s ease 0.4s both;
+    }
+
+    .reward-currency {
+      font-size: 0.8rem;
+      color: var(--gold-dark);
+      margin-bottom: 1.25rem;
+      animation: fadeUp 0.5s ease 0.5s both;
+    }
+
+    .reward-msg {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.8;
+      animation: fadeUp 0.5s ease 0.6s both;
     }
 
     .reset-btn {
@@ -227,20 +336,28 @@
       font-family: 'Tajawal', sans-serif;
       font-size: 0.8rem;
       cursor: pointer;
-      margin-top: 1.25rem;
+      margin-top: 1.5rem;
       text-decoration: underline;
       text-underline-offset: 3px;
       transition: color 0.2s;
       display: block;
+      width: 100%;
+      text-align: center;
     }
+
     .reset-btn:hover { color: var(--text); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <p class="eyebrow">تجربة شخصية صغيرة</p>
-    <h1>ماذا يقول <em>لونك</em> عنك؟</h1>
+    <p class="eyebrow">اختبار رياضي — اربح عملتك</p>
+    <h1>حلّ المسألة <em>واربح</em></h1>
   </header>
 
   <div class="card">
@@ -250,93 +367,123 @@
     </div>
 
     <div class="field">
-      <label>لونك المفضّل</label>
-      <div class="colors-grid" id="colorsGrid"></div>
+      <label>اختر رقماً — كل رقم جائزة مختلفة</label>
+      <div class="numbers-grid" id="numbersGrid"></div>
     </div>
 
-    <button class="submit-btn" id="submitBtn" disabled>اكتشف شخصيتك ←</button>
+    <div class="math-box" id="mathBox">
+      <p class="math-label">حلّ هذه المسألة لتربح جائزتك</p>
+      <p class="math-problem" id="mathProblem"></p>
+      <div class="math-input-row">
+        <input type="number" class="math-answer" id="mathAnswer" placeholder="الجواب"/>
+        <button class="check-btn" id="checkBtn">تحقق</button>
+      </div>
+      <p class="math-feedback" id="mathFeedback"></p>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" disabled>🪙 اقبض جائزتك</button>
 
     <div class="result" id="result">
-      <p class="result-label">قراءتك الشخصية</p>
-      <p class="result-name" id="resultName"></p>
-      <div class="result-color-bar" id="resultBar"></div>
-      <p class="result-text" id="resultText"></p>
-      <div id="resultTraits"></div>
-      <button class="reset-btn" id="resetBtn">↩ جرّب لوناً آخر</button>
+      <div class="coin-wrap">
+        <div class="coin">
+          <span class="coin-symbol" id="coinSymbol">ع</span>
+          <span class="coin-sub">مزيفة</span>
+        </div>
+      </div>
+      <p class="reward-title">مبروك يا</p>
+      <p class="reward-name" id="rewardName"></p>
+      <p class="reward-amount" id="rewardAmount"></p>
+      <p class="reward-currency" id="rewardCurrency"></p>
+      <p class="reward-msg" id="rewardMsg"></p>
+      <button class="reset-btn" id="resetBtn">↩ جرّب رقماً آخر</button>
     </div>
   </div>
 </div>
 
 <script>
-  const colors = [
+  const numbers = [
     {
-      id: 'red', label: 'أحمر', hex: '#e05252',
-      message: "أنت قوة لا يمكن تجاهلها. شغوف، طموح، وتملأ أي مكان تدخله بحضورك. تشعر بكل شيء بعمق، وهذا ما يميّزك عن الجميع.",
-      traits: ['شغوف', 'جريء', 'قائد']
+      id: 1, coins: 50, currency: 'عملة ذهبية مزيفة',
+      problem: '٧ + ٨ = ؟', answer: 15,
+      msg: 'هذه العملة لا قيمة لها على الإطلاق، لكنك كسبتها بجدارة!'
     },
     {
-      id: 'blue', label: 'أزرق', hex: '#5286e0',
-      message: "هادئ في الظاهر، لكن بداخلك محيط لا حدود له. أنت الشخص الذي يلجأ إليه الآخرون في أصعب اللحظات — موثوق، متأمّل، وحكيم بطريقة هادئة.",
-      traits: ['وفيّ', 'هادئ', 'مفكّر']
+      id: 2, coins: 120, currency: 'فضية وهمية',
+      problem: '١٥ − ٦ = ؟', answer: 9,
+      msg: 'لا يمكنك إنفاقها في أي مكان، لكنها لك!'
     },
     {
-      id: 'green', label: 'أخضر', hex: '#52c47a',
-      message: "لديك ثبات داخلي نادر. النمو يهمّك — في نفسك وفي من تحبّ وفي العالم من حولك. أنت النوع الذي يرعى كل ما يقترب منه.",
-      traits: ['ثابت', 'راعٍ', 'نامٍ']
+      id: 3, coins: 999, currency: 'كوينز خيالي',
+      problem: '٤ × ٦ = ؟', answer: 24,
+      msg: 'رصيد ضخم من عملة لا وجود لها في الواقع. ثروة وهمية!'
     },
     {
-      id: 'yellow', label: 'أصفر', hex: '#f0c040',
-      message: "تفاؤل معدٍ لا يقاوم. ترى الإمكانيات حيث يرى الآخرون نهايات مسدودة، وطاقتك تُضيء كل من حولك. هذا النوع من الإشراق نادر حقاً.",
-      traits: ['متفائل', 'مبدع', 'دافئ']
+      id: 4, coins: 75, currency: 'برونزية افتراضية',
+      problem: '٣٦ ÷ ٤ = ؟', answer: 9,
+      msg: 'عملة مزيفة بامتياز، لكن معدنها الوهمي يلمع!'
     },
     {
-      id: 'purple', label: 'بنفسجي', hex: '#9b6ee0',
-      message: "في داخلك شيء آخر غير عادي. تحلم بألوان زاهية وتفكّر بطبقات لا يصلها كثيرون. خيالك واسع وعمقك يفاجئ كل من يقترب منك.",
-      traits: ['حدسي', 'حالم', 'عميق']
+      id: 5, coins: 250, currency: 'توكن وهمي',
+      problem: '١٢ + ٢٣ = ؟', answer: 35,
+      msg: 'لا بلوك تشين ولا قيمة سوقية — فقط أرقام على الشاشة!'
     },
     {
-      id: 'orange', label: 'برتقالي', hex: '#e08040',
-      message: "حماس حقيقي لا يتكلّف. تقفز أولاً وتفكّر لاحقاً — وبطريقة ما تنجح دائماً. تحوّل العادي إلى مغامرة بمجرد وجودك.",
-      traits: ['مغامر', 'عفوي', 'مرِح']
+      id: 6, coins: 630, currency: 'دينار خيالي',
+      problem: '٩ × ٧ = ؟', answer: 63,
+      msg: 'جائزة كبيرة من عملة اخترعناها الآن. احتفظ بها!'
     },
     {
-      id: 'pink', label: 'وردي', hex: '#e06090',
-      message: "تعاطفك عميق وحقيقي. تلاحظ التفاصيل الصغيرة — نبرة صديق تغيّرت، صمت غريب لا يلاحظه أحد. تقود بقلبك وتجعل الناس يشعرون بأنهم مرئيون.",
-      traits: ['متعاطف', 'مُعطٍ', 'معبِّر']
+      id: 7, coins: 777, currency: 'عملة الحظ المزيفة',
+      problem: '١٠٠ − ٣٧ = ؟', answer: 63,
+      msg: 'رقم الحظ أعطاك عملة حظ — وهمية بالكامل!'
     },
     {
-      id: 'black', label: 'أسود', hex: '#888888',
-      message: "حضور هادئ لكنه لا يُنسى. لديك كثافة صامتة وعين ترى الجودة في كل شيء. تقول أقل وتعني أكثر، والناس المناسبون يفهمون هذا تماماً.",
-      traits: ['راقٍ', 'مكثَّف', 'انتقائي']
+      id: 8, coins: 888, currency: 'أوكتو كوين وهمي',
+      problem: '٤٨ ÷ ٦ = ؟', answer: 8,
+      msg: 'عملة مزيفة نادرة جداً — ولا أحد يريدها على أي حال!'
     },
     {
-      id: 'white', label: 'أبيض', hex: '#d4d0c8',
-      message: "الوضوح هو قوّتك الخارقة. تخترق الضجيج وتصل إلى الجوهر بسهولة، وترى الحقيقة حيث يرى الآخرون تعقيداً. ثقتك هادئة ولا تحتاج إلى إثبات.",
-      traits: ['واضح الفكر', 'صادق', 'نقي']
+      id: 9, coins: 2900, currency: 'ميغا كوين خيالي',
+      problem: '٥ × ٥ + ٤ = ؟', answer: 29,
+      msg: 'أعلى جائزة في اللعبة! وهمية بالكامل، لكن الرقم كبير!'
     },
   ];
 
-  let selectedColor = null;
+  let selectedNumber = null;
+  let mathSolved = false;
 
-  const grid = document.getElementById('colorsGrid');
+  const grid = document.getElementById('numbersGrid');
   const submitBtn = document.getElementById('submitBtn');
   const usernameInput = document.getElementById('username');
+  const mathBox = document.getElementById('mathBox');
+  const mathProblem = document.getElementById('mathProblem');
+  const mathAnswer = document.getElementById('mathAnswer');
+  const mathFeedback = document.getElementById('mathFeedback');
+  const checkBtn = document.getElementById('checkBtn');
   const result = document.getElementById('result');
-  const resultName = document.getElementById('resultName');
-  const resultBar = document.getElementById('resultBar');
-  const resultText = document.getElementById('resultText');
-  const resultTraits = document.getElementById('resultTraits');
+  const rewardName = document.getElementById('rewardName');
+  const rewardAmount = document.getElementById('rewardAmount');
+  const rewardCurrency = document.getElementById('rewardCurrency');
+  const rewardMsg = document.getElementById('rewardMsg');
   const resetBtn = document.getElementById('resetBtn');
 
-  colors.forEach(c => {
+  numbers.forEach(n => {
     const btn = document.createElement('button');
-    btn.className = 'color-btn';
-    btn.dataset.id = c.id;
-    btn.innerHTML = `<span class="color-dot" style="background:${c.hex}"></span>${c.label}`;
+    btn.className = 'num-btn';
+    btn.dataset.id = n.id;
+    btn.innerHTML = `<span class="num-big">${n.id}</span><span class="num-reward">🪙 ${n.coins}</span>`;
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
-      selectedColor = c;
+      selectedNumber = n;
+      mathSolved = false;
+      submitBtn.disabled = true;
+      mathAnswer.value = '';
+      mathFeedback.textContent = '';
+      mathFeedback.className = 'math-feedback';
+      mathProblem.textContent = n.problem;
+      mathBox.classList.add('visible');
+      checkBtn.disabled = false;
       checkReady();
     });
     grid.appendChild(btn);
@@ -345,17 +492,47 @@
   usernameInput.addEventListener('input', checkReady);
 
   function checkReady() {
-    submitBtn.disabled = !(usernameInput.value.trim() && selectedColor);
+    submitBtn.disabled = !(usernameInput.value.trim() && mathSolved);
+  }
+
+  checkBtn.addEventListener('click', checkAnswer);
+  mathAnswer.addEventListener('keydown', e => { if (e.key === 'Enter') checkAnswer(); });
+
+  function checkAnswer() {
+    const val = parseInt(mathAnswer.value.trim());
+    if (isNaN(val)) {
+      mathFeedback.textContent = 'أدخل رقماً صحيحاً';
+      mathFeedback.className = 'math-feedback wrong';
+      return;
+    }
+    if (val === selectedNumber.answer) {
+      mathFeedback.textContent = '✓ إجابة صحيحة! اقبض جائزتك الآن';
+      mathFeedback.className = 'math-feedback correct';
+      mathSolved = true;
+      checkBtn.disabled = true;
+      checkReady();
+    } else {
+      mathFeedback.textContent = '✗ إجابة خاطئة، حاول مرة أخرى';
+      mathFeedback.className = 'math-feedback wrong';
+      mathSolved = false;
+      checkReady();
+    }
   }
 
   submitBtn.addEventListener('click', () => {
     const name = usernameInput.value.trim();
-    if (!name || !selectedColor) return;
+    if (!name || !selectedNumber || !mathSolved) return;
 
-    resultName.innerHTML = `<span>${name}</span>، أنت...`;
-    resultBar.style.background = selectedColor.hex;
-    resultText.textContent = selectedColor.message;
-    resultTraits.innerHTML = selectedColor.traits.map(t => `<span class="result-trait">${t}</span>`).join('');
+    rewardName.textContent = name;
+    rewardAmount.textContent = selectedNumber.coins.toLocaleString('ar-EG') + ' 🪙';
+    rewardCurrency.textContent = selectedNumber.currency;
+    rewardMsg.textContent = selectedNumber.msg;
+
+    // re-trigger coin animation by replacing element
+    const coinEl = document.querySelector('.coin');
+    coinEl.style.animation = 'none';
+    coinEl.offsetHeight;
+    coinEl.style.animation = '';
 
     result.classList.add('visible');
     result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -364,11 +541,16 @@
 
   resetBtn.addEventListener('click', () => {
     result.classList.remove('visible');
-    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
-    selectedColor = null;
+    mathBox.classList.remove('visible');
+    document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('selected'));
+    selectedNumber = null;
+    mathSolved = false;
+    mathAnswer.value = '';
+    mathFeedback.textContent = '';
+    mathFeedback.className = 'math-feedback';
+    checkBtn.disabled = false;
     submitBtn.style.display = '';
     submitBtn.disabled = true;
-    checkReady();
   });
 </script>
 </body>
